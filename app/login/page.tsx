@@ -1,8 +1,7 @@
 export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm">
-
+     <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
         {/* Logo */}
        <div className="text-center">
   <h1 className="text-3xl font-bold tracking-tight text-slate-900">
@@ -23,7 +22,7 @@ export default function LoginPage() {
 </div>
 
         {/* Login Form */}
-        <form className="mt-8 space-y-5">
+        <form className="mt-8 space-y-6">
 
           {/* Email */}
           <div>
@@ -78,11 +77,22 @@ export default function LoginPage() {
 
           {/* Login Button */}
           <button
-            type="submit"
-            className="w-full rounded-lg bg-slate-900 px-4 py-3 font-medium text-white transition hover:bg-slate-700"
-          >
-            Login
-          </button>
+  type="submit"
+  className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md"
+>
+  Login
+</button>
+<div className="pt-2 text-center">
+  <p className="text-sm text-slate-500">
+    Don't have an account?{" "}
+    <a
+      href="#"
+      className="font-medium text-blue-600 hover:text-blue-700"
+    >
+      Sign up
+    </a>
+  </p>
+</div>
 
         </form>
 
