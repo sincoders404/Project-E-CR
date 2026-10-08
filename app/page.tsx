@@ -121,9 +121,12 @@ export default function Home() {
             {/* Class 1 */}
             <div className="flex items-center justify-between border-b px-6 py-5">
               <div>
-                <h4 className="font-semibold text-slate-900">
-                  CSE 221 — Data Structures
-                </h4>
+               <a
+  href="/classes/cse-221"
+  className="font-semibold text-slate-900 hover:text-blue-600"
+>
+  CSE 221 — Data Structures
+</a>
 
                 <p className="mt-1 text-sm text-slate-500">
                   Section A
