@@ -4,15 +4,23 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm">
 
         {/* Logo */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900">
-            E-CR
-          </h1>
+       <div className="text-center">
+  <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+    E-CR
+  </h1>
 
-          <p className="mt-2 text-sm text-slate-500">
-            Electronic Class Representative
-          </p>
-        </div>
+  <p className="mt-2 text-sm font-medium text-slate-500">
+    Electronic Class Representative
+  </p>
+
+  <h2 className="mt-8 text-2xl font-semibold text-slate-900">
+    Welcome Back
+  </h2>
+
+  <p className="mt-2 text-sm text-slate-500">
+    Sign in to continue to your account
+  </p>
+</div>
 
         {/* Login Form */}
         <form className="mt-8 space-y-5">
