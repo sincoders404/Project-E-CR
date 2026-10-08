@@ -1,2 +1,3 @@
 # Project-E-CR
-## Software to help class representatives
+
+## Software to help class 
