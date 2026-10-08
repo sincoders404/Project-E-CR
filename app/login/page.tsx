@@ -58,6 +58,23 @@ export default function LoginPage() {
               className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
+          <div className="flex items-center justify-between">
+  <label className="flex items-center gap-2 text-sm text-slate-600">
+    <input
+      type="checkbox"
+      className="h-4 w-4 rounded border-slate-300"
+    />
+
+    <span>Remember me</span>
+  </label>
+
+  <a
+    href="#"
+    className="text-sm font-medium text-blue-600 hover:text-blue-700"
+  >
+    Forgot password?
+  </a>
+</div>
 
           {/* Login Button */}
           <button
