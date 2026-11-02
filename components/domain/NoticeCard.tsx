@@ -39,7 +39,7 @@ export function NoticeCard({ notice }: { notice: Notice }) {
         <Bookmark aria-hidden className={cn("h-[18px] w-[18px]", bookmarked && "fill-brand-700")} />
       </button>
 
-      <h3 className="mt-2.5 text-[17px] leading-6 font-bold text-ink-900">{notice.title}</h3>
+      <h3 className="mt-2.5 pr-8 text-[17px] leading-6 font-bold text-ink-900">{notice.title}</h3>
       <p className="mt-1.5 text-sm leading-5 text-ink-700">{notice.body}</p>
 
       {notice.attachment && (

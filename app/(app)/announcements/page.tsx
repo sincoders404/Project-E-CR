@@ -71,7 +71,7 @@ export default function AnnouncementsPage() {
                 placeholder="Search notices…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="h-9 w-full rounded-[10px] border border-edge bg-surface pr-3 pl-9 text-[13px] outline-none placeholder:text-ink-400 focus:ring-2 focus:ring-brand-500"
+                className="h-9 w-full rounded-[10px] border border-edge bg-surface pr-3 pl-9 text-base outline-none placeholder:text-ink-400 focus:ring-2 focus:ring-brand-500 sm:text-[13px]"
               />
             </div>
           </div>

@@ -20,7 +20,7 @@ export function InfoRow({ icon, label, value, trailing, className }: InfoRowProp
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-[11px] text-ink-500">{label}</p>
-        <p className="truncate text-sm font-semibold text-ink-900">{value}</p>
+        <p className="text-sm font-semibold break-words text-ink-900">{value}</p>
       </div>
       {trailing}
     </div>

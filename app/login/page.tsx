@@ -77,7 +77,7 @@ export default function LoginPage() {
               </span>
 
               {/* Headline */}
-              <h1 className="mt-6 text-[32px] leading-[38px] font-extrabold tracking-tight lg:text-4xl lg:leading-[42px]">
+              <h1 className="mt-6 text-[28px] leading-[34px] font-extrabold tracking-tight sm:text-[32px] sm:leading-[38px] lg:text-4xl lg:leading-[42px]">
                 Better Class.
                 <br />
                 Better University.
@@ -195,7 +195,7 @@ export default function LoginPage() {
                 <span className="h-px flex-1 bg-edge" />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
                 <button
                   type="button"
                   onClick={() => showToast()}

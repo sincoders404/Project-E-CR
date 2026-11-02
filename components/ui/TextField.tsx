@@ -12,7 +12,7 @@ type TextFieldProps = {
 };
 
 const fieldClasses =
-  "h-12 w-full rounded-md border-2 border-transparent bg-brand-50 pr-4 pl-10 text-sm text-ink-900 outline-none " +
+  "h-12 w-full rounded-md border-2 border-transparent bg-brand-50 pr-4 pl-10 text-base text-ink-900 outline-none sm:text-sm " +
   "placeholder:text-ink-400 transition-colors duration-150 ease-out " +
   "focus:border-brand-500 focus:bg-white";
 

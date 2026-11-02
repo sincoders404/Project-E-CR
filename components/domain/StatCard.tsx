@@ -17,8 +17,8 @@ type StatCardProps = {
 export function StatCard({ eyebrow, chip, tile, value, valueSize = "lg", sub, footer }: StatCardProps) {
   return (
     <Card className="flex flex-col p-5">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[11px] leading-[14px] font-bold tracking-[0.06em] text-ink-400 uppercase">{eyebrow}</p>
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
+        <p className="min-w-0 text-[11px] leading-[14px] font-bold tracking-[0.06em] text-ink-400 uppercase">{eyebrow}</p>
         {chip && <Chip tone={chip.tone}>{chip.label}</Chip>}
       </div>
 

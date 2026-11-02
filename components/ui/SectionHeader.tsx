@@ -11,8 +11,8 @@ type SectionHeaderProps = {
 /** Card header row (spec 8.16): optional icon + H2 + optional subtitle + right action. */
 export function SectionHeader({ title, icon, subtitle, action, className }: SectionHeaderProps) {
   return (
-    <div className={cn("flex items-start justify-between gap-3", className)}>
-      <div className="flex items-start gap-2.5">
+    <div className={cn("flex flex-wrap items-start justify-between gap-x-3 gap-y-2", className)}>
+      <div className="flex min-w-0 flex-1 items-start gap-2.5">
         {icon && <span aria-hidden className="mt-0.5 text-brand-700 [&>svg]:h-[18px] [&>svg]:w-[18px]">{icon}</span>}
         <div>
           <h2 className="text-lg leading-6 font-bold text-ink-900">{title}</h2>

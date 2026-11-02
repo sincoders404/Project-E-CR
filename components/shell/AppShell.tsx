@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => setDrawerOpen(false)}
             className="absolute inset-0 h-full w-full bg-ink-900/40"
           />
-          <div className="absolute inset-y-0 left-0 flex w-[260px] flex-col bg-surface shadow-pop">
+          <div className="absolute inset-y-0 left-0 flex w-[260px] max-w-[85vw] flex-col bg-surface shadow-pop">
             <button
               type="button"
               onClick={() => setDrawerOpen(false)}
@@ -37,7 +37,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <X aria-hidden className="h-4 w-4" />
             </button>
-            <Sidebar />
+            <Sidebar expanded />
           </div>
         </div>
       )}

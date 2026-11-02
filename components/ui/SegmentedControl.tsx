@@ -36,7 +36,7 @@ export function SegmentedControl({
             aria-checked={active}
             onClick={() => onChange(opt.id)}
             className={cn(
-              "press flex h-10 items-center justify-center gap-2 rounded-[10px] px-3 text-[13px] font-semibold",
+              "press flex h-10 min-w-0 items-center justify-center gap-2 rounded-[10px] px-2 text-xs font-semibold sm:px-3 sm:text-[13px]",
               "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-500",
               active ? "bg-surface text-brand-700 shadow-sm ring-1 ring-edge" : "text-ink-500 hover:text-ink-700",
             )}

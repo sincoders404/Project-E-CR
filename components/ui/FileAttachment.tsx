@@ -26,7 +26,7 @@ export function FileAttachment({ name, meta, action = "icon", onDownload, classN
         <p className="text-[11px] text-ink-500">{meta}</p>
       </div>
       {action === "button" ? (
-        <Button size="sm" onClick={onDownload}>
+        <Button size="sm" className="shrink-0" onClick={onDownload}>
           Download
         </Button>
       ) : (

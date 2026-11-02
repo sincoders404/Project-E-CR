@@ -391,7 +391,7 @@ function SecurityTab() {
             </div>
             <Toggle checked={alerts} onCheckedChange={setAlerts} label="Login alerts" />
           </div>
-          <div className="flex items-center justify-between gap-3 rounded-md border border-edge p-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-edge p-3">
             <div className="min-w-0">
               <p className="text-sm font-bold text-ink-900">Active sessions</p>
               <p className="text-[11px] text-ink-500">3 devices currently signed in</p>

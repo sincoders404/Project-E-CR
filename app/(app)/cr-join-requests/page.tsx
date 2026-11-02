@@ -129,8 +129,8 @@ export default function CRJoinRequestsPage() {
                 { id: "rejected", label: "Rejected", count: counts.rejected },
               ]}
             />
-            <div className="flex items-center gap-2">
-              <Select label="Filter by section" options={["CSE 221 · Sec 2", "CSE 221 · Sec 1"]} value={section} onChange={setSection} />
+            <div className="flex min-w-0 items-center gap-2">
+              <Select label="Filter by section" options={["CSE 221 · Sec 2", "CSE 221 · Sec 1"]} value={section} onChange={setSection} className="w-36 sm:w-44" />
               <FilterIconButton label="More filters" />
             </div>
           </div>

@@ -30,7 +30,7 @@ const sizeClasses: Record<Size, string> = {
 
 function classesFor({ variant = "primary", size = "md", block }: { variant?: Variant; size?: Size; block?: boolean }) {
   return cn(
-    "press inline-flex items-center justify-center gap-2 rounded-md font-semibold whitespace-nowrap",
+    "press inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-semibold whitespace-nowrap",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500",
     "disabled:opacity-50 disabled:pointer-events-none",
     variant !== "ghost" && "shadow-sm",

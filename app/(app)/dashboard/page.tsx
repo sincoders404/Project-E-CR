@@ -53,7 +53,7 @@ export default function DashboardPage() {
             Here&apos;s what&apos;s happening in your class today and upcoming academic deadlines.
           </p>
         </div>
-        <div className="flex h-11 items-center gap-3 rounded-full border border-edge bg-surface px-4">
+        <div className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-edge bg-surface px-4 py-1.5 max-[430px]:rounded-2xl">
           <span aria-hidden className="h-2 w-2 rounded-full bg-brand-700" />
           <span className="text-[11px] font-bold tracking-[0.06em] text-ink-400 uppercase">{activeTerm.eyebrow}</span>
           <span className="rounded-full bg-brand-100 px-2.5 py-1 text-[11px] font-semibold text-brand-700">
@@ -201,7 +201,7 @@ export default function DashboardPage() {
                 <RosterOfficer key={o.initials} officer={o} />
               ))}
             </div>
-            <ButtonLink href="/class-details" variant="soft" block className="mt-4">
+            <ButtonLink href="/class-details" variant="soft" block className="mt-4 h-auto min-h-10 py-2 whitespace-normal text-center">
               View Full Class Directory (48 Students)
             </ButtonLink>
           </Card>

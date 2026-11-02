@@ -29,7 +29,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
             type="search"
             aria-label="Search classes, student ID, notices, schedules"
             placeholder="Search classes, student ID, notices, schedules..."
-            className="hidden h-10 w-full rounded-md bg-brand-50 pr-4 pl-10 text-[13px] text-ink-900 outline-none placeholder:text-ink-400 focus:bg-white focus:ring-2 focus:ring-brand-500 md:block"
+            className="hidden h-10 w-full rounded-md bg-brand-50 pr-4 pl-10 text-base text-ink-900 outline-none placeholder:text-ink-400 focus:bg-white focus:ring-2 focus:ring-brand-500 md:block md:text-[13px]"
           />
           <button
             type="button"

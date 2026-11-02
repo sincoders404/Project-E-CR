@@ -10,7 +10,7 @@ function NavItemActive(href: string, pathname: string) {
 }
 
 /** Sidebar (spec 7.2): 220px white rail; collapses to a 72px icon rail below xl. */
-export function Sidebar() {
+export function Sidebar({ expanded = false }: { expanded?: boolean }) {
   const pathname = usePathname();
 
   return (
@@ -23,43 +23,45 @@ export function Sidebar() {
         >
           <GraduationCap className="h-5 w-5" />
         </span>
-        <span className="hidden min-w-0 xl:block">
+        <span className={cn("min-w-0", expanded ? undefined : "hidden xl:block")}>
           <span className="flex items-center gap-1.5">
             <span className="text-base font-bold text-ink-900">E-CR</span>
             <span className="rounded-[4px] bg-brand-100 px-1 py-px text-[9px] leading-[14px] font-bold text-brand-700">
               PORTAL
             </span>
           </span>
-          <span className="block text-xs text-ink-500">Academic Operations</span>
+          <span className="block truncate text-xs text-ink-500">Academic Operations</span>
         </span>
       </Link>
 
       {/* Workspace */}
-      <p aria-hidden className="mt-5 mb-2 hidden px-3 text-[11px] leading-[14px] font-bold tracking-[0.06em] text-ink-400 uppercase xl:block">
+      <p aria-hidden className={cn("mt-5 mb-2 px-3 text-[11px] leading-[14px] font-bold tracking-[0.06em] text-ink-400 uppercase", expanded ? undefined : "hidden xl:block")}>
         Workspace
       </p>
-      <p aria-hidden className="mt-5 mb-2 px-3 text-center text-[11px] font-bold tracking-[0.06em] text-ink-400 uppercase xl:hidden">
-        ·
-      </p>
+      {!expanded && (
+        <p aria-hidden className="mt-5 mb-2 px-3 text-center text-[11px] font-bold tracking-[0.06em] text-ink-400 uppercase xl:hidden">
+          ·
+        </p>
+      )}
       <nav aria-label="Main" className="flex flex-col gap-1">
         {navMain.map((item) => (
-          <SidebarItem key={item.href} item={item} active={NavItemActive(item.href, pathname)} />
+          <SidebarItem key={item.href} item={item} active={NavItemActive(item.href, pathname)} expanded={expanded} />
         ))}
       </nav>
 
       {/* System */}
-      <p aria-hidden className="mt-5 mb-2 hidden px-3 text-[11px] leading-[14px] font-bold tracking-[0.06em] text-ink-400 uppercase xl:block">
+      <p aria-hidden className={cn("mt-5 mb-2 px-3 text-[11px] leading-[14px] font-bold tracking-[0.06em] text-ink-400 uppercase", expanded ? undefined : "hidden xl:block")}>
         System
       </p>
       <nav aria-label="System" className="flex flex-col gap-1">
         {navSystem.map((item) => (
-          <SidebarItem key={item.href} item={item} active={NavItemActive(item.href, pathname)} />
+          <SidebarItem key={item.href} item={item} active={NavItemActive(item.href, pathname)} expanded={expanded} />
         ))}
       </nav>
 
       {/* Logout pinned to bottom */}
       <div className={cn("mt-auto border-t border-edge pt-3")}>
-        <SidebarLogout />
+        <SidebarLogout expanded={expanded} />
       </div>
     </div>
   );

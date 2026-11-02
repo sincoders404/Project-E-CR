@@ -52,7 +52,7 @@ export function Tabs({ items, value, onChange, variant = "filter", label, classN
       aria-label={label}
       onKeyDown={onKeyDown}
       className={cn(
-        "inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-md p-1",
+        "flex w-full min-w-0 items-center gap-1 overflow-x-auto rounded-md p-1 sm:inline-flex sm:w-auto",
         variant === "pill" ? "border border-edge bg-surface" : "bg-brand-50",
         className,
       )}
