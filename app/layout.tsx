@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ToastProvider } from "@/components/ui/Toast";
+import { RoleProvider } from "@/context/RoleProvider";
+import { ToastProvider } from "@/context/ToastProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -9,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "E-CR | Electronic Class Representative",
-  description: "Electronic Class Representative Management System",
+  title: "E-CR | Class Representative Portal",
+  description: "Announcements, Deadlines, and Google Drive Resources for University Classes",
 };
 
 export default function RootLayout({
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body>
-        <ToastProvider>{children}</ToastProvider>
+        <RoleProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </RoleProvider>
       </body>
     </html>
   );

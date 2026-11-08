@@ -1,227 +1,383 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
-  Bell,
   CalendarDays,
-  CheckCircle2,
-  ClipboardList,
-  Code,
-  Megaphone,
+  Copy,
+  Mail,
+  Phone,
+  ArrowRight,
+  Plus,
+  HardDrive,
   Users,
-  Zap,
 } from "lucide-react";
-import { AnnouncementItem } from "@/components/domain/AnnouncementItem";
-import { ClassSessionCard } from "@/components/domain/ClassSessionCard";
-import { QuickActionRow } from "@/components/domain/QuickActionRow";
-import { RosterOfficer } from "@/components/domain/RosterOfficer";
-import { StatCard } from "@/components/domain/StatCard";
-import { Avatar } from "@/components/ui/Avatar";
-import { ButtonLink } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Chip } from "@/components/ui/Chip";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { useRole } from "@/context/RoleProvider";
+import { useToast } from "@/components/ui/Toast";
+import {
+  getTodaySchedule,
+  getActiveRoutineNotices,
+  getVisiblePosts,
+  getSectionCRs,
+  getClassmates,
+  getCurrentTerm,
+  isUserCR,
+} from "@/data/queries";
+import { ScheduleItem } from "@/components/domain/ScheduleItem";
+import { PostCard } from "@/components/domain/PostCard";
+import { PersonRow } from "@/components/domain/PersonRow";
 import { Tabs } from "@/components/ui/Tabs";
-import { announcements, quickActions, rosterOfficers, specialNotice, todaySchedule } from "@/data/dashboard";
-import { activeTerm, currentUser } from "@/data/user";
-
-type Filter = "all" | "urgent" | "exams";
-
-const filterItems = [
-  { id: "all", label: "All", count: 8 },
-  { id: "urgent", label: "Urgent", count: 2 },
-  { id: "exams", label: "Exams" },
-];
+import { Avatar } from "@/components/ui/Avatar";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { PostFormModal } from "@/components/domain/PostFormModal";
+import { ResourceFormModal } from "@/components/domain/ResourceFormModal";
 
 export default function DashboardPage() {
-  const [filter, setFilter] = useState<Filter>("all");
+  const {
+    currentUser,
+    personaRole,
+    posts,
+    resources,
+    offerings,
+    enrollments,
+    terms,
+    sections,
+    sectionCRs,
+    scheduleEntries,
+    courses,
+    users,
+  } = useRole();
+  const { showToast } = useToast();
 
-  const visible =
-    filter === "all"
-      ? announcements
-      : announcements.filter((a) => (filter === "urgent" ? a.kind === "urgent" : a.kind === "exam"));
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [postModalOpen, setPostModalOpen] = useState(false);
+  const [resourceModalOpen, setResourceModalOpen] = useState(false);
+
+  const currentTerm = getCurrentTerm(terms);
+  const userSectionId = currentUser.sectionId || "sec-33a";
+  const userSection = sections.find((s) => s.id === userSectionId);
+
+  // Queries through queries.ts strictly per Rule 6
+  const visiblePosts = getVisiblePosts(currentUser, posts, offerings, enrollments);
+  const todayEntries = getTodaySchedule(userSectionId, currentTerm.id, scheduleEntries, 1); // 1 = Monday (TODAY)
+  const routineNotices = getActiveRoutineNotices(currentUser, posts, offerings, enrollments);
+  const sectionCRList = getSectionCRs(userSectionId, sectionCRs, users);
+  const classmates = getClassmates(userSectionId, users);
+
+  // Filter posts by type tab
+  const filteredPosts = visiblePosts.filter((p) => {
+    if (activeTab === "all") return true;
+    if (activeTab === "announcement") return p.type === "announcement";
+    if (activeTab === "deadline") return p.type === "deadline";
+    if (activeTab === "exam") return p.type === "exam";
+    return true;
+  });
+
+  const pinnedPost = visiblePosts.find((p) => p.pinned);
+  const displayPosts = filteredPosts.slice(0, 4);
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard?.writeText(text);
+    showToast(`Copied ${label} to clipboard`);
+  };
+
+  const tabItems = [
+    { id: "all", label: "All", count: visiblePosts.length },
+    {
+      id: "announcement",
+      label: "Notices",
+      count: visiblePosts.filter((p) => p.type === "announcement").length,
+    },
+    {
+      id: "deadline",
+      label: "Deadlines",
+      count: visiblePosts.filter((p) => p.type === "deadline").length,
+    },
+    {
+      id: "exam",
+      label: "Exams",
+      count: visiblePosts.filter((p) => p.type === "exam").length,
+    },
+  ];
+
+  const canManage = isUserCR(currentUser.id, sectionCRs) || personaRole === "CR";
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Header row */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      {/* ── Header ─────────────────────────────────────────────── */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] leading-9 font-extrabold tracking-tight text-ink-900">
-            Good Morning, {currentUser.firstName}! <span aria-hidden>👋</span>
+          <h1 className="text-2xl sm:text-[26px] font-extrabold tracking-tight text-ink-900">
+            Good Morning, {currentUser.name.split(" ")[0]}! <span aria-hidden>👋</span>
           </h1>
-          <p className="mt-1.5 text-sm text-ink-500">
-            Here&apos;s what&apos;s happening in your class today and upcoming academic deadlines.
+          <p className="mt-1 text-sm text-ink-500">
+            Today&apos;s routine, section announcements, and academic updates.
           </p>
         </div>
-        <div className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-edge bg-surface px-4 py-1.5 max-[430px]:rounded-2xl">
-          <span aria-hidden className="h-2 w-2 rounded-full bg-brand-700" />
-          <span className="text-[11px] font-bold tracking-[0.06em] text-ink-400 uppercase">{activeTerm.eyebrow}</span>
-          <span className="rounded-full bg-brand-100 px-2.5 py-1 text-[11px] font-semibold text-brand-700">
-            {activeTerm.label}
-          </span>
-        </div>
-      </div>
 
-      {/* Row 1 — stat cards */}
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          eyebrow="Enrolled Course"
-          chip={{ tone: "info", label: "Section 02" }}
-          tile={{ tone: "brand", icon: <Code /> }}
-          value="CSE 221"
-          sub="Object Oriented Programming"
-          footer={{
-            left: (
-              <>
-                <Users aria-hidden />
-                <span>48 Peers</span>
-              </>
-            ),
-            right: (
-              <ButtonLink href="/class-details" variant="ghost" size="sm" className="h-auto p-0">
-                Rm 402B →
-              </ButtonLink>
-            ),
-          }}
-        />
-        <StatCard
-          eyebrow="Primary Representative"
-          chip={{ tone: "success", label: "Active CR" }}
-          value={
-            <span className="flex items-center gap-2.5">
-              <Avatar size={36} initials="NJ" presence />
-              <span className="truncate text-lg font-extrabold">Nusrat Jahan</span>
+        <div className="flex items-center gap-2">
+          {canManage && (
+            <>
+              <Button size="sm" onClick={() => setPostModalOpen(true)} className="gap-1">
+                <Plus className="h-4 w-4" />
+                Post
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setResourceModalOpen(true)} className="gap-1">
+                <HardDrive className="h-4 w-4" />
+                Upload Resource
+              </Button>
+            </>
+          )}
+
+          <div className="inline-flex items-center gap-2 rounded-full border border-edge bg-surface px-3.5 py-1.5 shadow-xs">
+            <span className="h-2 w-2 rounded-full bg-brand-700 animate-pulse" />
+            <span className="text-xs font-bold text-brand-700">
+              CSE {userSection?.name || "33-A"} · {currentTerm.name}
             </span>
-          }
-          sub="Student ID: 21-1-60-112"
-          footer={{
-            left: (
-              <>
-                <CheckCircle2 aria-hidden className="text-success-600" />
-                <span className="text-success-600">On Duty</span>
-              </>
-            ),
-            right: (
-              <ButtonLink href="/profile" variant="ghost" size="sm" className="h-auto p-0">
-                Profile ↗
-              </ButtonLink>
-            ),
-          }}
-        />
-        <StatCard
-          eyebrow="Representative Applications"
-          chip={{ tone: "warning", label: "2 In Review" }}
-          tile={{ tone: "amber", icon: <ClipboardList /> }}
-          valueSize="md"
-          value="Join Queue"
-          sub="Awaiting CR & Faculty sign-off"
-          footer={{
-            left: <span>Submitted 2d ago</span>,
-            right: (
-              <ButtonLink href="/cr-join-requests" variant="ghost" size="sm" className="h-auto p-0">
-                Track →
-              </ButtonLink>
-            ),
-          }}
-        />
-        <StatCard
-          eyebrow="Class Bulletin"
-          chip={{ tone: "danger", label: "4 Unread" }}
-          tile={{ tone: "brand", icon: <Bell /> }}
-          valueSize="md"
-          value="New Notices"
-          sub="Latest: Midterm Routine updated"
-          footer={{
-            left: <span>Updated 45m ago</span>,
-            right: (
-              <ButtonLink href="/announcements" variant="ghost" size="sm" className="h-auto p-0">
-                Browse →
-              </ButtonLink>
-            ),
-          }}
-        />
-      </div>
-
-      {/* Row 2 — announcements + right column */}
-      <div className="grid gap-5 xl:grid-cols-[65fr_35fr]">
-        <Card className="p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <SectionHeader icon={<Megaphone />} title="Recent Announcements" />
-            <Tabs label="Filter announcements" value={filter} onChange={(id) => setFilter(id as Filter)} items={filterItems} />
           </div>
-          <div className="mt-4 flex flex-col gap-3" role="tabpanel" aria-label="Announcements">
-            {visible.map((a) => (
-              <AnnouncementItem key={a.id} item={a} />
-            ))}
-          </div>
-        </Card>
-
-        <div className="flex flex-col gap-5">
-          {/* CR Special Notice */}
-          <Card className="bg-grad-notice p-5 text-white">
-            <div className="flex items-center justify-between gap-2">
-              <Chip className="bg-white/20 text-white" icon={<Megaphone />}>
-                CR Special Notice
-              </Chip>
-              <span className="text-xs text-white/75">Today</span>
-            </div>
-            <h2 className="mt-3 text-lg font-bold">{specialNotice.title}</h2>
-            <p className="mt-2 text-[13px] leading-5 text-white/90 italic">
-              “{specialNotice.body}”
-            </p>
-            <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-3">
-              <span className="flex items-center gap-2.5">
-                <Avatar size={32} initials={specialNotice.authorInitials} />
-                <span className="text-[13px] font-semibold">{specialNotice.authorName}</span>
-              </span>
-              <ButtonLink href="/announcements" variant="ghost" size="sm" className="h-auto p-0 text-white">
-                Discuss 💬
-              </ButtonLink>
-            </div>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card className="p-5">
-            <SectionHeader
-              title="Quick Actions"
-              action={<Zap aria-hidden className="h-[18px] w-[18px] text-brand-700" />}
-            />
-            <div className="mt-3 flex flex-col gap-2">
-              {quickActions.map((a) => (
-                <QuickActionRow key={a.title} action={a} />
-              ))}
-            </div>
-          </Card>
-
-          {/* Class Roster Officers */}
-          <Card className="p-5">
-            <SectionHeader title="Class Roster Officers" action={<Chip tone="info">2 CRs</Chip>} />
-            <div className="mt-3 flex flex-col gap-2">
-              {rosterOfficers.map((o) => (
-                <RosterOfficer key={o.initials} officer={o} />
-              ))}
-            </div>
-            <ButtonLink href="/class-details" variant="soft" block className="mt-4 h-auto min-h-10 py-2 whitespace-normal text-center">
-              View Full Class Directory (48 Students)
-            </ButtonLink>
-          </Card>
         </div>
       </div>
 
-      {/* Row 3 — today's schedule */}
+      {/* ── 1. Today's Class Schedule (Full Width) ─────────────── */}
       <Card className="p-5">
-        <SectionHeader
-          icon={<CalendarDays />}
-          title="Today's Class Schedule"
-          subtitle="Wednesday, October 15 • 3 Sessions scheduled"
-          action={<Chip tone="info">Week 06</Chip>}
-        />
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {todaySchedule.map((s) => (
-            <ClassSessionCard key={s.id} session={s} />
-          ))}
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-edge/60 pb-3 mb-4">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-brand-100 text-brand-700">
+              <CalendarDays className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-base font-bold text-ink-900">
+                Today&apos;s Class Schedule
+              </h2>
+              <p className="text-xs text-ink-500">
+                Monday, November 09, 2026 • {todayEntries.length} Sessions scheduled
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/routine"
+            className="text-xs font-semibold text-brand-700 hover:underline"
+          >
+            Weekly Routine →
+          </Link>
         </div>
+
+        {todayEntries.length === 0 ? (
+          <p className="text-center py-6 text-xs text-ink-400">
+            No classes scheduled for today. Enjoy your day!
+          </p>
+        ) : (
+          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+            {todayEntries.map((entry, index) => {
+              const off = offerings.find((o) => o.id === entry.offeringId);
+              const crs = courses.find((c) => c.id === off?.courseId);
+              const notices = routineNotices.filter((n) => n.offeringId === entry.offeringId);
+              const status = index === 0 ? "done" : index === 1 ? "now" : "next";
+
+              return (
+                <ScheduleItem
+                  key={entry.id}
+                  entry={entry}
+                  course={crs}
+                  offering={off}
+                  status={status}
+                  notices={notices}
+                />
+              );
+            })}
+          </div>
+        )}
       </Card>
+
+      {/* ── 2. Announcements & Deadlines (65%) + Right Column (35%) ─ */}
+      <div className="grid gap-6 lg:grid-cols-[65fr_35fr]">
+        {/* Left Column: Announcements and Deadlines */}
+        <div className="flex flex-col gap-4">
+          <Card className="p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-edge/60 pb-3 mb-4">
+              <div>
+                <h2 className="text-base font-bold text-ink-900">
+                  Announcements & Deadlines
+                </h2>
+                <p className="text-xs text-ink-500">
+                  Notices and reminders from your class representatives
+                </p>
+              </div>
+
+              <Link
+                href="/announcements"
+                className="press flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
+              >
+                See all
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="mb-4">
+              <Tabs
+                label="Filter feed"
+                value={activeTab}
+                onChange={setActiveTab}
+                items={tabItems}
+              />
+            </div>
+
+            {/* Pinned Post if on 'all' or 'announcement' tab */}
+            {(activeTab === "all" || activeTab === "announcement") && pinnedPost && (
+              <div className="mb-4">
+                <PostCard
+                  post={pinnedPost}
+                  courseCode={
+                    courses.find(
+                      (c) =>
+                        c.id ===
+                        offerings.find((o) => o.id === pinnedPost.offeringId)?.courseId
+                    )?.code
+                  }
+                  canManage={canManage}
+                />
+              </div>
+            )}
+
+            {/* Recent Posts List */}
+            <div className="flex flex-col gap-3">
+              {displayPosts
+                .filter((p) => p.id !== pinnedPost?.id)
+                .map((post) => {
+                  const off = offerings.find((o) => o.id === post.offeringId);
+                  const crs = courses.find((c) => c.id === off?.courseId);
+                  return (
+                    <PostCard
+                      key={post.id}
+                      post={post}
+                      courseCode={crs?.code}
+                      canManage={canManage}
+                    />
+                  );
+                })}
+            </div>
+          </Card>
+        </div>
+
+        {/* Right Column: Your CRs + Classmates */}
+        <div className="flex flex-col gap-5">
+          {/* Your CRs Card */}
+          <Card className="p-4">
+            <h3 className="text-sm font-bold text-ink-900 border-b border-edge/60 pb-2.5 mb-3">
+              Your Class Representatives
+            </h3>
+
+            <div className="flex flex-col gap-3">
+              {sectionCRList.map((cr) => (
+                <div key={cr.id} className="rounded-lg border border-edge bg-brand-50/30 p-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar
+                      size={36}
+                      initials={cr.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .slice(0, 2)
+                        .join("")}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="text-sm font-bold text-ink-900 truncate">
+                          {cr.name}
+                        </h4>
+                        <span className="rounded bg-brand-100 px-1.5 py-0.2 text-[10px] font-bold text-brand-700">
+                          CR
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-ink-500 tabular">ID: {cr.studentId}</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-2.5 flex flex-col gap-1.5 text-xs">
+                    <div className="flex items-center justify-between rounded bg-white px-2 py-1.5 border border-edge/50">
+                      <span className="flex items-center gap-1.5 text-ink-700 truncate">
+                        <Mail className="h-3.5 w-3.5 text-brand-700 shrink-0" />
+                        {cr.email}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(cr.email, "email")}
+                        title="Copy email"
+                        aria-label="Copy email"
+                        className="press text-ink-400 hover:text-brand-700 p-0.5"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </button>
+                    </div>
+
+                    {cr.phone && (
+                      <div className="flex items-center justify-between rounded bg-white px-2 py-1.5 border border-edge/50">
+                        <span className="flex items-center gap-1.5 text-ink-700 truncate">
+                          <Phone className="h-3.5 w-3.5 text-brand-700 shrink-0" />
+                          {cr.phone}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(cr.phone!, "phone")}
+                          title="Copy phone"
+                          aria-label="Copy phone"
+                          className="press text-ink-400 hover:text-brand-700 p-0.5"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Classmates Card */}
+          <Card className="p-4">
+            <div className="flex items-center justify-between gap-2 border-b border-edge/60 pb-2.5 mb-3">
+              <h3 className="flex items-center gap-1.5 text-sm font-bold text-ink-900">
+                <Users className="h-4 w-4 text-brand-700" />
+                Classmates ({classmates.length})
+              </h3>
+              <Link
+                href="/classmates"
+                className="text-xs font-semibold text-brand-700 hover:underline"
+              >
+                View all →
+              </Link>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {classmates.slice(0, 5).map((st) => (
+                <PersonRow
+                  key={st.id}
+                  name={st.name}
+                  studentId={st.studentId}
+                  badge={sectionCRList.some((cr) => cr.id === st.id) ? "CR" : undefined}
+                />
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* Modals for CR */}
+      {canManage && (
+        <>
+          <PostFormModal
+            open={postModalOpen}
+            onClose={() => setPostModalOpen(false)}
+            sectionId={userSectionId}
+          />
+          <ResourceFormModal
+            open={resourceModalOpen}
+            onClose={() => setResourceModalOpen(false)}
+            sectionId={userSectionId}
+          />
+        </>
+      )}
     </div>
   );
 }

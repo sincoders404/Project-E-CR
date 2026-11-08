@@ -1,14 +1,14 @@
 import { cn } from "@/lib/cn";
 
 type CardProps = React.HTMLAttributes<HTMLDivElement> & {
-  variant?: "default" | "tinted" | "accent-left";
+  variant?: "default" | "muted" | "highlight" | "tinted" | "accent-left";
 };
 
 /**
- * White rounded card. Variants per spec 8.1:
- * - default: white bg, card shadow
- * - tinted: brand-50 bg, no shadow (nested rows / banner cards)
- * - accent-left: 4px brand-700 left border
+ * White rounded card per Spec 9:
+ * - default: white bg, shadow-card
+ * - muted: grey/muted background
+ * - highlight: white bg, shadow-card, 4px brand-700 left border
  */
 export function Card({ variant = "default", className, ...props }: CardProps) {
   return (
@@ -16,9 +16,11 @@ export function Card({ variant = "default", className, ...props }: CardProps) {
       className={cn(
         "rounded-lg",
         variant === "default" && "bg-surface shadow-card",
+        variant === "muted" && "bg-muted border border-edge",
+        (variant === "highlight" || variant === "accent-left") &&
+          "bg-surface shadow-card border-l-4 border-l-brand-700",
         variant === "tinted" && "bg-brand-50",
-        variant === "accent-left" && "bg-surface shadow-card border-l-4 border-l-brand-700",
-        className,
+        className
       )}
       {...props}
     />
