@@ -90,7 +90,7 @@ export default function ProfilePage() {
                   Section & Batch
                 </span>
                 <span className="text-xs font-bold text-ink-900">
-                  {batch?.department} {section?.name || "33-A"}
+                  {batch?.department} {section?.name || "—"}
                 </span>
               </div>
 

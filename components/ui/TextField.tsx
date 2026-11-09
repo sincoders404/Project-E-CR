@@ -56,7 +56,6 @@ export function PasswordField({ label, trailing }: { label: string; trailing?: R
           type={visible ? "text" : "password"}
           name="password"
           autoComplete="current-password"
-          defaultValue="password123"
           className={cn(fieldClasses, "pr-11")}
         />
         <button

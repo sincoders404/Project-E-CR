@@ -21,7 +21,7 @@ export function CourseRow({
 }: CourseRowProps) {
   return (
     <Link
-      href={`/courses/${offering.id}`}
+      href={`/courses/offering/${offering.id}`}
       className={cn(
         "press group flex items-center justify-between rounded-lg border border-edge bg-surface p-4 transition-all hover:border-brand-500 hover:bg-brand-50/40 hover:shadow-sm",
         className

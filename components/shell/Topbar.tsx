@@ -25,7 +25,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
     .join("")
     .toUpperCase();
 
-  const userSectionId = currentUser.sectionId || "sec-33a";
+  const userSectionId = currentUser.sectionId || "";
 
   return (
     <>

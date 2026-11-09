@@ -29,7 +29,7 @@ export default function RequestsPage() {
     rejectSignup,
   } = useRole();
 
-  const userSectionId = currentUser.sectionId || "sec-33a";
+  const userSectionId = currentUser.sectionId || "";
   const userSection = sections.find((s) => s.id === userSectionId);
   const canApproveSignups = userSection?.crCanApproveSignups ?? false;
 
@@ -82,7 +82,7 @@ export default function RequestsPage() {
           Course Retake & Sign-up Requests
         </h1>
         <p className="mt-1 text-sm text-ink-500">
-          Approve or reject student course enrollment applications for CSE {userSection?.name || "33-A"}.
+          Approve or reject student course enrollment applications for CSE {userSection?.name || "—"}.
         </p>
       </div>
 

@@ -13,6 +13,8 @@ import {
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export type NavItemKey =
   | "dashboard"
@@ -91,13 +93,26 @@ export function SidebarItem({ item, active, expanded = false }: SidebarItemProps
 }
 
 export function SidebarLogout({ expanded = false }: { expanded?: boolean }) {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const { error } = await createClient().auth.signOut();
+    if (error) {
+      console.error("Unable to log out:", error.message);
+      return;
+    }
+    router.replace("/login");
+    router.refresh();
+  };
+
   return (
-    <Link
-      href="/login"
+    <button
+      type="button"
+      onClick={() => void handleLogout()}
       className="press flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-danger-600 hover:bg-danger-100 focus-visible:outline-2 focus-visible:outline-danger-600"
     >
       <LogOut aria-hidden className="h-[18px] w-[18px] shrink-0" />
       <span className={cn(expanded ? undefined : "hidden xl:inline")}>Logout</span>
-    </Link>
+    </button>
   );
 }

@@ -11,7 +11,7 @@ export default function ClassmatesPage() {
   const { currentUser, users, sections, sectionCRs } = useRole();
   const [search, setSearch] = useState("");
 
-  const userSectionId = currentUser.sectionId || "sec-33a";
+  const userSectionId = currentUser.sectionId || "";
   const userSection = sections.find((s) => s.id === userSectionId);
   const classmates = getClassmates(userSectionId, users);
   const sectionCRList = getSectionCRs(userSectionId, sectionCRs, users);
@@ -34,7 +34,7 @@ export default function ClassmatesPage() {
             Classmates
           </h1>
           <span className="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-bold text-brand-700">
-            CSE {userSection?.name || "33-A"}
+            CSE {userSection?.name || "—"}
           </span>
         </div>
         <p className="mt-1 text-sm text-ink-500">

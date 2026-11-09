@@ -1,10 +1,5 @@
 import { Suspense } from "react";
 import { OfferingsDetailClient } from "./OfferingsDetailClient";
-import { mockCourses } from "@/data/mock";
-
-export function generateStaticParams() {
-  return mockCourses.map((c) => ({ courseId: c.id }));
-}
 
 export default function Page({
   params,

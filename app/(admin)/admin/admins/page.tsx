@@ -18,13 +18,14 @@ export default function AdminUsersPage() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [adminName, setAdminName] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [targetAdmin, setTargetAdmin] = useState<User | null>(null);
 
-  const handleAddAdmin = (e: React.FormEvent) => {
+  const handleAddAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adminName.trim() || !adminEmail.trim()) return;
+    if (!adminName.trim() || !adminEmail.trim() || adminPassword.length < 8) return;
 
     const newAdmin: User = {
       id: `usr-admin-${Date.now()}`,
@@ -35,11 +36,12 @@ export default function AdminUsersPage() {
       adminScope: null,
     };
 
-    addAdminUser(newAdmin);
+    await addAdminUser(newAdmin, adminPassword);
     showToast(`Added administrator ${adminName}`);
     setAddModalOpen(false);
     setAdminName("");
     setAdminEmail("");
+    setAdminPassword("");
   };
 
   const handleConfirmRemove = () => {
@@ -61,6 +63,22 @@ export default function AdminUsersPage() {
           <p className="mt-1 text-sm text-ink-500">
             Manage administrative personnel with full department access and coordination privileges.
           </p>
+        </div>
+
+        <div>
+          <label htmlFor="adm-password" className="mb-1 block text-xs font-semibold text-ink-700">
+            Temporary Password
+          </label>
+          <input
+            id="adm-password"
+            type="password"
+            required
+            minLength={8}
+            placeholder="At least 8 characters"
+            value={adminPassword}
+            onChange={(e) => setAdminPassword(e.target.value)}
+            className="h-10 w-full rounded-md border border-edge bg-brand-50/50 px-3 text-sm text-ink-900 outline-none focus:border-brand-500 focus:bg-white"
+          />
         </div>
 
         <Button size="md" onClick={() => setAddModalOpen(true)} className="gap-1.5">

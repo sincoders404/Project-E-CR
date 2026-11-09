@@ -370,8 +370,8 @@ export const mockScheduleEntries: ScheduleEntry[] = [
 
   // Monday (TODAY: 2026-11-09 is a Monday!)
   { id: "sch-3", sectionId: "sec-33a", termId: "term-fall26", day: 1, startTime: "09:00", endTime: "10:20", offeringId: "off-33a-f26-comp", room: "Room 402B" },
-  { id: "sch-4", sectionId: "sec-33a", termId: "term-fall26", day: 1, startTime: "10:30", endTime: "01:30", offeringId: "off-33a-f26-lab", room: "Digital Lab 501" },
-  { id: "sch-5", sectionId: "sec-33a", termId: "term-fall26", day: 1, startTime: "02:00", endTime: "03:20", offeringId: "off-33a-f26-ai", room: "Room 305" },
+  { id: "sch-4", sectionId: "sec-33a", termId: "term-fall26", day: 1, startTime: "10:30", endTime: "13:30", offeringId: "off-33a-f26-lab", room: "Digital Lab 501" },
+  { id: "sch-5", sectionId: "sec-33a", termId: "term-fall26", day: 1, startTime: "14:00", endTime: "15:20", offeringId: "off-33a-f26-ai", room: "Room 305" },
 
   // Tuesday
   { id: "sch-6", sectionId: "sec-33a", termId: "term-fall26", day: 2, startTime: "09:00", endTime: "10:20", offeringId: "off-33a-f26-dist", room: "Room 402B" },

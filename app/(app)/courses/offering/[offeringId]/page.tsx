@@ -1,23 +1,16 @@
 import { Suspense } from "react";
 import { CourseDetailClient } from "./CourseDetailClient";
-import { initialClasses } from "@/data/classes";
 
-export function generateStaticParams() {
-  return initialClasses
-    .flatMap((c) => c.courses)
-    .map((course) => ({ courseId: course.id }));
-}
-
-export default function CourseDetailPage({
+export default function Page({
   params,
 }: {
-  params: Promise<{ courseId: string }>;
+  params: Promise<{ offeringId: string }>;
 }) {
   return (
     <Suspense
       fallback={
         <div className="py-12 text-center text-xs text-ink-400">
-          Loading course details...
+          Loading course...
         </div>
       }
     >

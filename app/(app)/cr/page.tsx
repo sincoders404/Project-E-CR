@@ -55,7 +55,7 @@ export default function CRDashboardPage() {
   const [editingResource, setEditingResource] = useState<Resource | null>(null);
 
   const currentTerm = getCurrentTerm(terms);
-  const userSectionId = currentUser.sectionId || "sec-33a";
+  const userSectionId = currentUser.sectionId || "";
   const userSection = sections.find((s) => s.id === userSectionId);
 
   // Queries
@@ -74,7 +74,7 @@ export default function CRDashboardPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-[26px] font-extrabold tracking-tight text-ink-900">
-              CR Operations: CSE {userSection?.name || "33-A"}
+              CR Operations: CSE {userSection?.name || "—"}
             </h1>
             <span className="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-bold text-brand-700">
               {currentTerm.name}
@@ -222,7 +222,7 @@ export default function CRDashboardPage() {
                 Today&apos;s Routine
               </h2>
               <p className="text-xs text-ink-500">
-                Monday sessions for CSE {userSection?.name || "33-A"}
+                Monday sessions for CSE {userSection?.name || "—"}
               </p>
             </div>
           </div>

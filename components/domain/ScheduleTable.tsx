@@ -41,8 +41,8 @@ export function ScheduleTable({
   const handleAddRow = () => {
     const newRow: ScheduleEntry = {
       id: `sch-${Date.now()}`,
-      sectionId: entries[0]?.sectionId || "sec-33a",
-      termId: entries[0]?.termId || "term-fall26",
+      sectionId: entries[0]?.sectionId || "",
+      termId: entries[0]?.termId || "",
       day: 1,
       startTime: "09:00",
       endTime: "10:20",
@@ -56,7 +56,11 @@ export function ScheduleTable({
     setLocalEntries(localEntries.filter((e) => e.id !== id));
   };
 
-  const handleFieldChange = (id: string, field: keyof ScheduleEntry, value: any) => {
+  const handleFieldChange = (
+    id: string,
+    field: keyof ScheduleEntry,
+    value: string | number
+  ) => {
     setLocalEntries(
       localEntries.map((e) => (e.id === id ? { ...e, [field]: value } : e))
     );

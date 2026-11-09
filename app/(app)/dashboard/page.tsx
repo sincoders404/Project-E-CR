@@ -55,7 +55,7 @@ export default function DashboardPage() {
   const [resourceModalOpen, setResourceModalOpen] = useState(false);
 
   const currentTerm = getCurrentTerm(terms);
-  const userSectionId = currentUser.sectionId || "sec-33a";
+  const userSectionId = currentUser.sectionId || "";
   const userSection = sections.find((s) => s.id === userSectionId);
 
   // Queries through queries.ts strictly per Rule 6
@@ -133,7 +133,7 @@ export default function DashboardPage() {
           <div className="inline-flex items-center gap-2 rounded-full border border-edge bg-surface px-3.5 py-1.5 shadow-xs">
             <span className="h-2 w-2 rounded-full bg-brand-700 animate-pulse" />
             <span className="text-xs font-bold text-brand-700">
-              CSE {userSection?.name || "33-A"} · {currentTerm.name}
+              CSE {userSection?.name || "—"} · {currentTerm.name}
             </span>
           </div>
         </div>

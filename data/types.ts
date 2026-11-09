@@ -70,6 +70,7 @@ export type EnrollmentRequest = {
   studentId: string;
   offeringId: string;
   status: "pending" | "approved" | "rejected";
+  note?: string;
   rejectReason?: string;
   createdAt: string;
 };
@@ -80,6 +81,7 @@ export type PostKind = "general" | "reschedule" | "cancel" | "online";
 export type Post = {
   id: string;
   sectionId: string;
+  termId?: string;
   offeringId?: string;
   type: PostType;
   kind: PostKind;
@@ -89,6 +91,7 @@ export type Post = {
   expiresOn?: string;
   pinned: boolean;
   authorId: string;
+  authorName?: string;
   createdAt: string;
 };
 
@@ -98,6 +101,7 @@ export type Resource = {
   title: string;
   driveUrl: string;
   authorId: string;
+  authorName?: string;
   createdAt: string;
 };
 

@@ -1,10 +1,5 @@
 import { Suspense } from "react";
 import { AdminSectionDetailClient } from "./AdminSectionDetailClient";
-import { mockSections } from "@/data/mock";
-
-export function generateStaticParams() {
-  return mockSections.map((s) => ({ sectionId: s.id }));
-}
 
 export default function Page({
   params,

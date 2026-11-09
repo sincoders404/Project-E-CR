@@ -1,5 +1,7 @@
 import { AppShell } from "@/components/shell/AppShell";
 
+export const instant = false;
+
 export default function AdminLayout({
   children,
 }: {
@@ -7,4 +9,3 @@ export default function AdminLayout({
 }) {
   return <AppShell>{children}</AppShell>;
 }
-

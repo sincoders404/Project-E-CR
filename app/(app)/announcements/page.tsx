@@ -75,7 +75,7 @@ export default function AnnouncementsPage() {
   );
 
   const canManage = isUserCR(currentUser.id, sectionCRs) || personaRole === "CR";
-  const userSectionId = currentUser.sectionId || "sec-33a";
+  const userSectionId = currentUser.sectionId || "";
 
   const tabItems = [
     { id: "all", label: "All Items", count: visiblePosts.length },
