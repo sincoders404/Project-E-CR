@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 export default function NotFound() {
   return (
     <div className="mx-auto max-w-[520px] py-16">
-      <Card className="p-10 text-center">
+      <Card className="p-6 text-center sm:p-10">
         <span
           aria-hidden
           className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-brand-100 text-brand-700"

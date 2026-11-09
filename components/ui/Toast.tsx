@@ -23,11 +23,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext value={value}>
       {children}
-      <div aria-live="polite" className="pointer-events-none fixed right-4 bottom-4 z-50 flex flex-col gap-2">
+      <div aria-live="polite" className="pointer-events-none fixed right-4 bottom-4 left-4 z-50 flex flex-col gap-2 sm:right-4 sm:left-auto sm:max-w-sm">
         {toasts.map((t) => (
           <div
             key={t.id}
-            className="animate-toast rounded-md bg-ink-900 px-4 py-3 text-[13px] text-white shadow-pop motion-reduce:animate-none"
+            className="animate-toast rounded-md bg-ink-900 px-4 py-3 text-[13px] break-words text-white shadow-pop motion-reduce:animate-none"
           >
             {t.message}
           </div>
@@ -42,3 +42,4 @@ export function useToast(): ToastContextValue {
   if (!ctx) throw new Error("useToast must be used within ToastProvider");
   return ctx;
 }
+

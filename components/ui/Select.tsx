@@ -17,7 +17,7 @@ export function Select({ label, options, value, onChange, className }: SelectPro
         aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="press h-9 w-full appearance-none rounded-[10px] border border-edge bg-surface pr-8 pl-3 text-[13px] font-medium text-ink-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+        className="press h-9 w-full appearance-none rounded-[10px] border border-edge bg-surface pr-8 pl-3 text-base font-medium text-ink-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:text-[13px]"
       >
         {options.map((o) => (
           <option key={o}>{o}</option>

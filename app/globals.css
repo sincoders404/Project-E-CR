@@ -1,71 +1,42 @@
 @import "tailwindcss";
 
-/* ------------------------------------------------------------------ */
-/* E-CR Portal design tokens (section 5 of the UI spec)               */
-/* ------------------------------------------------------------------ */
 @theme {
-  /* Brand */
-  --color-brand-50: #f0f4ff;
-  --color-brand-100: #e4ebff;
-  --color-brand-500: #2f63e8;
-  --color-brand-600: #1d4ed8;
   --color-brand-700: #0b3fbf;
-  --color-brand-900: #0a2a8a;
+  --color-brand-600: #1d4ed8;
+  --color-brand-500: #2f63e8;
+  --color-brand-900: #082d8a;
+  --color-brand-100: #e4ebff;
+  --color-brand-50: #f0f4ff;
 
-  /* Surfaces */
   --color-canvas: #f4f6fd;
   --color-surface: #ffffff;
-  --color-surface-alt: #f6f8ff;
-  --color-login-canvas: #f7f8fd;
-
-  /* Borders */
+  --color-border: #e3e8f5;
   --color-edge: #e3e8f5;
   --color-edge-strong: #cbd5ee;
 
-  /* Text */
   --color-ink-900: #0f172a;
   --color-ink-700: #334155;
   --color-ink-500: #64748b;
   --color-ink-400: #94a3b8;
 
-  /* Semantic */
-  --color-success-100: #ddf6ea;
   --color-success-600: #12915a;
-  --color-warning-100: #ffebd2;
+  --color-success-100: #ddf6ea;
   --color-warning-600: #c2610c;
-  --color-danger-100: #fde4e1;
+  --color-warning-100: #ffebd2;
   --color-danger-600: #d92d20;
-  --color-amber-tile: #fff3c4;
-  --color-amber-accent: #b7791f;
-  --color-violet-tile: #ede7ff;
-  --color-violet-accent: #6d4ae0;
-  --color-slate-chip: #e9edf7;
+  --color-danger-100: #fde4e1;
+  --color-muted: #f1f3f8;
 
-  /* Radius */
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
 
-  /* Shadows */
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px rgb(30 64 175 / 0.06);
-  --shadow-pop: 0 8px 30px rgb(15 23 42 / 0.12);
-  --shadow-login: 0 20px 60px rgb(30 64 175 / 0.15);
-
-  /* Font */
-  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(30, 64, 175, 0.06);
+  --shadow-login: 0 12px 40px rgba(30, 64, 175, 0.1);
+  --shadow-pop: 0 8px 30px rgba(15, 23, 42, 0.12);
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Gradients (section 5.2) */
-.bg-grad-brand {
-  background-image: linear-gradient(135deg, #0a2a8a 0%, #1d4ed8 55%, #2f63e8 100%);
-}
-.bg-grad-notice {
-  background-image: linear-gradient(135deg, #0b3fbf 0%, #1e55e0 100%);
-}
-
-/* ------------------------------------------------------------------ */
-/* Base                                                               */
-/* ------------------------------------------------------------------ */
 * {
   box-sizing: border-box;
 }
@@ -82,20 +53,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Tabular numerals for stats and times (section 6) */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* 2-line body clamp used by announcement items */
-.clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Motion: 150ms ease-out colour/shadow/transform transitions (section 11) */
 .press {
   transition:
     background-color 150ms ease-out,
@@ -108,30 +69,6 @@ body {
   transform: scale(0.97);
 }
 
-/* Progress fill + ring animate on first mount (section 11) */
-@keyframes fill-x {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-.animate-fill {
-  transform-origin: left;
-  animation: fill-x 600ms ease-out both;
-}
-
-@keyframes ring-in {
-  from {
-    stroke-dashoffset: var(--ring-circumference);
-  }
-}
-.animate-ring {
-  animation: ring-in 600ms ease-out both;
-}
-
-/* Demo toast (section 11) */
 @keyframes toast-in {
   from {
     opacity: 0;
@@ -150,8 +87,6 @@ body {
   html {
     scroll-behavior: auto;
   }
-  .animate-fill,
-  .animate-ring,
   .animate-toast {
     animation: none;
   }

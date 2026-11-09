@@ -1,119 +1,211 @@
 "use client";
 
 import { useState } from "react";
-import { Megaphone, Plus, Search } from "lucide-react";
-import { AnnouncementItem } from "@/components/domain/AnnouncementItem";
-import { RosterOfficer } from "@/components/domain/RosterOfficer";
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Chip } from "@/components/ui/Chip";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Plus, Megaphone } from "lucide-react";
+import { useRole } from "@/context/RoleProvider";
+import { getVisiblePosts, isUserCR } from "@/data/queries";
+import { PostCard } from "@/components/domain/PostCard";
+import { FilterBar } from "@/components/domain/FilterBar";
 import { Tabs } from "@/components/ui/Tabs";
-import { useToast } from "@/components/ui/Toast";
-import { announcements, rosterOfficers, specialNotice } from "@/data/dashboard";
-import type { Announcement } from "@/data/dashboard";
-
-type Filter = "all" | "urgent" | "exams" | "routine" | "meetings";
-
-const filterItems = [
-  { id: "all", label: "All", count: 8 },
-  { id: "urgent", label: "Urgent", count: 2 },
-  { id: "exams", label: "Exams" },
-  { id: "routine", label: "Routine" },
-  { id: "meetings", label: "Meetings" },
-];
-
-function matches(a: Announcement, f: Filter) {
-  if (f === "all") return true;
-  if (f === "urgent") return a.kind === "urgent";
-  if (f === "exams") return a.kind === "exam";
-  if (f === "routine") return a.kind === "routine";
-  return a.kind === "meeting";
-}
+import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Pagination } from "@/components/ui/Pagination";
+import { PostFormModal } from "@/components/domain/PostFormModal";
+import { Post } from "@/data/types";
 
 export default function AnnouncementsPage() {
-  const { showToast } = useToast();
-  const [filter, setFilter] = useState<Filter>("all");
-  const [query, setQuery] = useState("");
+  const {
+    currentUser,
+    personaRole,
+    posts,
+    offerings,
+    enrollments,
+    terms,
+    courses,
+    sectionCRs,
+  } = useRole();
 
-  const visible = announcements.filter(
-    (a) =>
-      matches(a, filter) &&
-      (query.trim() === "" ||
-        `${a.title} ${a.body}`.toLowerCase().includes(query.trim().toLowerCase())),
+  const [activeType, setActiveType] = useState<string>("all");
+  const [selectedTerm, setSelectedTerm] = useState<string>("all");
+  const [selectedCourse, setSelectedCourse] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [postModalOpen, setPostModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
+
+  // Queries
+  const visiblePosts = getVisiblePosts(currentUser, posts, offerings, enrollments);
+
+  // Apply filters
+  const filteredPosts = visiblePosts.filter((post) => {
+    // Type tab
+    if (activeType !== "all" && post.type !== activeType) return false;
+
+    // Offering details
+    const off = offerings.find((o) => o.id === post.offeringId);
+
+    // Term filter
+    if (selectedTerm !== "all") {
+      if (off && off.termId !== selectedTerm) return false;
+    }
+
+    // Course filter
+    if (selectedCourse !== "all") {
+      if (!off || off.courseId !== selectedCourse) return false;
+    }
+
+    // Search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const match =
+        post.title.toLowerCase().includes(q) ||
+        post.body.toLowerCase().includes(q);
+      if (!match) return false;
+    }
+
+    return true;
+  });
+
+  // Pagination (10 per page per Spec 7.4)
+  const pageSize = 10;
+  const totalPages = Math.ceil(filteredPosts.length / pageSize);
+  const pagedPosts = filteredPosts.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
   );
+
+  const canManage = isUserCR(currentUser.id, sectionCRs) || personaRole === "CR";
+  const userSectionId = currentUser.sectionId || "";
+
+  const tabItems = [
+    { id: "all", label: "All Items", count: visiblePosts.length },
+    {
+      id: "announcement",
+      label: "Notices",
+      count: visiblePosts.filter((p) => p.type === "announcement").length,
+    },
+    {
+      id: "deadline",
+      label: "Deadlines",
+      count: visiblePosts.filter((p) => p.type === "deadline").length,
+    },
+    {
+      id: "exam",
+      label: "Exams",
+      count: visiblePosts.filter((p) => p.type === "exam").length,
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-[28px] leading-9 font-extrabold tracking-tight text-ink-900">Announcements</h1>
-          <p className="mt-1.5 text-sm text-ink-500">All official notices for CSE 221 • Section 02</p>
+          <h1 className="text-2xl font-extrabold tracking-tight text-ink-900">
+            Announcements & Deadlines
+          </h1>
+          <p className="mt-1 text-sm text-ink-500">
+            Broadcasts, schedule revisions, homework deadlines, and exam routines.
+          </p>
         </div>
-        <Button onClick={() => showToast()} disabled aria-disabled title="Demo only">
-          <Plus aria-hidden className="h-4 w-4" />
-          New Announcement
-        </Button>
+
+        {canManage && (
+          <Button
+            size="md"
+            onClick={() => {
+              setEditingPost(null);
+              setPostModalOpen(true);
+            }}
+            className="gap-1.5"
+          >
+            <Plus className="h-4 w-4" />
+            Post Notice
+          </Button>
+        )}
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[65fr_35fr]">
-        {/* Main list */}
-        <Card className="p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <Tabs label="Filter announcements" value={filter} onChange={(id) => setFilter(id as Filter)} items={filterItems} />
-            <div className="relative w-full sm:w-[220px]">
-              <Search aria-hidden className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400" />
-              <input
-                type="search"
-                aria-label="Search announcements"
-                placeholder="Search notices…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="h-9 w-full rounded-[10px] border border-edge bg-surface pr-3 pl-9 text-[13px] outline-none placeholder:text-ink-400 focus:ring-2 focus:ring-brand-500"
+      {/* Tabs */}
+      <div className="flex items-center justify-between">
+        <Tabs
+          label="Filter announcement type"
+          value={activeType}
+          onChange={(val) => {
+            setActiveType(val);
+            setCurrentPage(1);
+          }}
+          items={tabItems}
+        />
+      </div>
+
+      {/* Filter Bar (Term, Course, Search) */}
+      <FilterBar
+        terms={terms}
+        courses={courses}
+        selectedTerm={selectedTerm}
+        onTermChange={(t) => {
+          setSelectedTerm(t);
+          setCurrentPage(1);
+        }}
+        selectedCourse={selectedCourse}
+        onCourseChange={(c) => {
+          setSelectedCourse(c);
+          setCurrentPage(1);
+        }}
+        searchQuery={searchQuery}
+        onSearchChange={(q) => {
+          setSearchQuery(q);
+          setCurrentPage(1);
+        }}
+      />
+
+      {/* Posts List */}
+      {pagedPosts.length === 0 ? (
+        <div className="rounded-xl border border-edge bg-surface py-14 shadow-card">
+          <EmptyState
+            icon={<Megaphone />}
+            title="No matching posts found"
+            caption="Try adjusting your filters or clearing search criteria to view announcements."
+          />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {pagedPosts.map((post) => {
+            const off = offerings.find((o) => o.id === post.offeringId);
+            const crs = courses.find((c) => c.id === off?.courseId);
+            return (
+              <PostCard
+                key={post.id}
+                post={post}
+                courseCode={crs?.code}
+                canManage={canManage}
+                onEdit={(p) => {
+                  setEditingPost(p);
+                  setPostModalOpen(true);
+                }}
               />
-            </div>
-          </div>
-          <div className="mt-4 flex flex-col gap-3" role="tabpanel" aria-label="Announcements">
-            {visible.map((a) => (
-              <AnnouncementItem key={a.id} item={a} />
-            ))}
-            {visible.length === 0 && (
-              <p className="rounded-md bg-brand-50 p-6 text-center text-[13px] text-ink-500">
-                No announcements match this filter.
-              </p>
-            )}
-          </div>
-        </Card>
+            );
+          })}
 
-        {/* Sidebar */}
-        <div className="flex flex-col gap-5">
-          <Card className="bg-grad-notice p-5 text-white">
-            <div className="flex items-center justify-between gap-2">
-              <Chip className="bg-white/20 text-white" icon={<Megaphone />}>
-                CR Special Notice
-              </Chip>
-              <span className="text-xs text-white/75">Today</span>
-            </div>
-            <h2 className="mt-3 text-lg font-bold">{specialNotice.title}</h2>
-            <p className="mt-2 text-[13px] leading-5 text-white/90 italic">“{specialNotice.body}”</p>
-            <div className="mt-4 flex items-center gap-2.5 border-t border-white/15 pt-3">
-              <Avatar size={32} initials={specialNotice.authorInitials} />
-              <span className="text-[13px] font-semibold">{specialNotice.authorName}</span>
-            </div>
-          </Card>
-
-          <Card className="p-5">
-            <SectionHeader title="Class Roster Officers" action={<Chip tone="info">2 CRs</Chip>} />
-            <div className="mt-3 flex flex-col gap-2">
-              {rosterOfficers.map((o) => (
-                <RosterOfficer key={o.initials} officer={o} />
-              ))}
-            </div>
-          </Card>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
-      </div>
+      )}
+
+      {/* Post Modal */}
+      {canManage && (
+        <PostFormModal
+          open={postModalOpen}
+          onClose={() => {
+            setPostModalOpen(false);
+            setEditingPost(null);
+          }}
+          sectionId={userSectionId}
+          initialPost={editingPost}
+        />
+      )}
     </div>
   );
 }

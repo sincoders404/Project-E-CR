@@ -6,7 +6,7 @@ export default function GlobalNotFound() {
     <html lang="en">
       <body>
         <main className="flex min-h-screen items-center justify-center bg-canvas px-4">
-          <div className="w-full max-w-[520px] rounded-lg bg-surface p-10 text-center shadow-card">
+          <div className="w-full max-w-[520px] rounded-lg bg-surface p-6 text-center shadow-card sm:p-10">
             <span
               aria-hidden
               className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-brand-100 text-brand-700"
